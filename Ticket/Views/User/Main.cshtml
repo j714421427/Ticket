@@ -1,0 +1,127 @@
+﻿<div id="app">
+    <h5>{{title}}</h5>
+
+    <div class="search">
+        <div class="divTable">
+            <div class="divTableBody">
+                <div class="divTableRow">
+                    <div class="divTableCell">Name<input v-model="searchname" type="text" /></div>
+                    <div class="divTableCell">
+                        <ht-dropdown :status="initStatus"
+                                     :options="htOptions"
+                                     @@updatehtdropdownstatus="updateHtDropdownStatus">
+                        </ht-dropdown>
+                    </div>
+                    <div class="divTableCell"><input type="button" value="search" v-on:click="search()" /></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <input type="button" value="Addition" v-on:click="addition()" />
+    <br />
+
+    <page :gridhead="gridhead"
+          :griddata="griddata"
+          @@edititem="edititem"
+          @@deleteitem="deleteitem">
+
+    </page>
+</div>
+
+
+
+
+<script>
+    var page = new Vue({
+        el: '#app',
+        created: function () {
+            this.search()
+        },
+        data: {
+            title: "User",
+            searchname: "",
+            searchaccount: "",
+            gridhead: ["Name", "Account", "Edit", "Delete"],
+            griddata: [],
+            initStatus: 0,
+            htOptions: {
+                0: {
+                    statusText: 'All',
+                    statusTitle: 'All',
+                    optionText: 'All',
+                    optionTitle: 'All',
+                    isShow: true
+                },
+                1: {
+                    statusText: 'Enabled',
+                    statusTitle: 'Enabled',
+                    optionText: 'Enabled',
+                    optionTitle: 'Enabled',
+                    isShow: true
+                },
+                2: {
+                    statusText: 'Disabled',
+                    statusTitle: 'Disabled',
+                    optionText: 'Disabled',
+                    optionTitle: 'Disabled',
+                    isShow: true
+                },
+                //3: {
+                //    statusText: 'statusTextC',
+                //    statusTitle: 'statusTitleC',
+                //    optionText: 'optTextC',
+                //    optionTitle: 'optTitleC',
+                //    isShow: true
+                //},
+            },
+
+        },
+        methods: {
+            search: function () {
+                this.$http.get(`/User/GetAll?Name=${this.searchname}&Status=${this.initStatus}`).then(
+                    function (data) {
+                        this.griddata = [];
+                        var userMain = data["data"];
+                        userMain.items.forEach(element => {
+                            var itemarr = [element.name, element.account, element.id, element.id];
+                            this.griddata.push(itemarr);
+                        });
+                    }, function (response) {
+                        console.log('請求失敗');
+                        if (response.status == 403) {
+                            alert(response.body);
+                            window.location.replace(`/Home/Index`);
+                        }
+                    });
+            },
+            addition: function (itemId) {
+                window.location.replace(`/User/Detail?Id=0&Mode=Add`);
+            },
+            edititem: function (itemId) {
+                window.location.replace(`/User/Detail?Id=${itemId}&Mode=Edit`);
+            },
+            deleteitem: function (itemId) {
+                if (confirm("Are you sure to delete?")) {
+                    this.$http.get(`/User/Delete?Id=${itemId}`).then(
+                        function (data) {
+                            this.search();
+                        }, function () {
+                            console.log('請求失敗');
+                            if (response.status == 403) {
+                                alert(response.body);
+                            }
+                        });
+                }
+            },
+            updateHtDropdownStatus(statusId, callback) {
+                var status = Number(statusId);
+                if (status == 0) {
+                    this.initStatus = null;
+                }
+                this.initStatus = status;
+            },
+        }
+    });
+</script>

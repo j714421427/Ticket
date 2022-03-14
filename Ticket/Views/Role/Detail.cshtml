@@ -1,0 +1,108 @@
+﻿<div id="detail">
+    <h5>{{mode}}</h5>
+    <div class="divTable">
+        <div class="divTableBody">
+            <div class="divTableRow">
+                <div class="divTableCell">Name</div>
+                <div class="divTableCell"><input v-model="name" type="text" /></div>
+                <div class="divTableCell">Account</div>
+                <div class="divTableCell"><input v-model="account" type="text" /></div>
+            </div>
+            <div class="divTableRow">
+                <div class="divTableCell">Password</div>
+                <div class="divTableCell"><input v-model="password" type="text" /></div>
+                <div class="divTableCell">Status</div>
+                <div class="divTableCell">
+                    <ht-dropdown :status="status"
+                                 :options="htOptions"
+                                 @@updatehtdropdownstatus="updateHtDropdownStatus">
+                    </ht-dropdown>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div><input type="button" value="Save" v-on:click="save()" /></div>
+</div>
+
+
+
+<script>
+    var page = new Vue({
+        el: '#detail',
+        created: function () {
+            this.load()
+        },
+        data: {
+            mode: "@ViewBag.Mode",
+            id: "@ViewBag.Id",
+            name: "NewOne",
+            account: "",
+            password: "",
+            status: 1,
+            htOptions: {
+                1: {
+                    statusText: 'Enabled',
+                    statusTitle: 'Enabled',
+                    optionText: 'Enabled',
+                    optionTitle: 'Enabled',
+                    isShow: true
+                },
+                2: {
+                    statusText: 'Disabled',
+                    statusTitle: 'Disabled',
+                    optionText: 'Disabled',
+                    optionTitle: 'Disabled',
+                    isShow: true
+                },
+                //3: {
+                //    statusText: 'statusTextC',
+                //    statusTitle: 'statusTitleC',
+                //    optionText: 'optTextC',
+                //    optionTitle: 'optTitleC',
+                //    isShow: true
+                //},
+            },
+
+        },
+        methods: {
+            load: function () {
+                if (this.mode != "Add") {
+                    this.$http.get(`/User/Get?Id=${this.id}`).then(
+                        function (data) {
+                            var detail = data["data"];
+                            this.name = detail.name;
+                            this.account = detail.account;
+                            this.password = detail.password;
+                            this.status = detail.status;
+                        }, function () {
+                            console.log('請求失敗');
+                        });
+                }
+            },
+            save: function () {
+
+                var formData = new FormData();
+                formData.append("Id", this.id);
+                formData.append("name", this.name);
+                formData.append("account", this.account);
+                formData.append("password", this.password);
+                formData.append("status", this.status);
+
+                this.$http.post(`/User/Save`, formData).then(
+                    function (data) {
+                        window.location.replace(`/User/Main`)
+                    }, function () {
+                        console.log('請求失敗');
+                });
+            },
+            updateHtDropdownStatus(statusId, callback) {
+                var status = Number(statusId);
+                if (status == 0) {
+                    this.initStatus = null;
+                }
+                this.initStatus = status;
+            },
+        }
+    });
+</script>

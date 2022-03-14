@@ -1,0 +1,89 @@
+﻿input {
+    margin: 10px;
+}
+
+.enable {
+    opacity: unset;
+}
+
+.disable {
+    opacity: 0.4;
+}
+
+p.ht-dropdown-status-text::after {
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+.ht-dropdown-options {
+    position: absolute;
+    background-color: white;
+    margin-top: -20px;
+}
+
+    .ht-dropdown-options .ht-dropdown-option {
+        border-style: ridge;
+    }
+    .ht-dropdown-options .ht-dropdown-option:hover{
+        background-color: gray;
+    }
+
+/* DivTable.com */
+
+
+.divTable {
+    border-width: 1px 1px 0px 0px;
+    user-select: none;
+}
+
+.divInTable {
+    border-width: 0px 1px 0px 0px;
+}
+
+.divTable, divInTable {
+    display: table;
+    width: 100%;
+}
+
+.divTableRow {
+    display: table-row;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+
+.divTableCell, .divTableHead {
+    border: 1px solid #999999;
+    display: table-cell;
+    padding: 3px 10px;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.divTableBody {
+    display: table-row-group;
+}
+
+@media (min-width: 1200px) {
+    .container {
+        width: 1500px;
+    }
+}

@@ -1,0 +1,42 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Login";
+}
+
+@if (TempData["loginerror"] is string message)
+{
+    <script>alert("@message");</script>
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container">
+        @using (Html.BeginForm())
+        {
+            <div class="row .mx-auto">
+                <div class="col ">
+                    <div class="col well">
+                        <h3>LogIn</h3>
+                        <div class="input-group input-group-md">
+                            <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-user" aria-hidden="true"></i></span>
+                            <input class="form-control" id="Account" name="Account" placeholder="Account" />
+                        </div>
+                        <div class="input-group input-group-md">
+                            <span class="input-group-addon" id="sizing-addon1"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input class="form-control" id="Password" name="Password" type="Password" placeholder="PassWord" />
+                        </div>
+                        <button type="submit" class="btn btn-success ">Login</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>

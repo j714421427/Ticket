@@ -1,0 +1,172 @@
+﻿<div id="detail">
+    <h5>{{mode}}</h5>
+    <div class="divTable">
+        <div class="divTableBody">
+            <div class="divTableRow">
+                <div class="divTableCell">Title</div>
+                <div class="divTableCell">
+                    <input v-model="title" type="text" :readonly="mode == 'Detail'" />
+                </div>
+                <div class="divTableCell">TaskType</div>
+                <div class="divTableCell">
+                    <div v-if="mode == 'Detail'">{{initasktypetitle}}</div>
+                    <ht-dropdown v-else
+                                 :status="tasktype"
+                                 :options="tasktypeOptions"
+                                 :inititle="initasktypetitle"
+                                 @@updatehtdropdownstatus="updatetasktypeDropdownStatus">
+                    </ht-dropdown>
+                </div>
+            </div>
+            <div class="divTableRow">
+                <div class="divTableCell">TaskStatus</div>
+                <div class="divTableCell">
+                    <div v-if="mode == 'Detail'">{{initaskstatustitle}}</div>
+                    <ht-dropdown v-else
+                                 :status="taskstatus"
+                                 :options="taskstatusOptions"
+                                 :inititle="initaskstatustitle"
+                                 @@updatehtdropdownstatus="updatetaskstatusDropdownStatus">
+                    </ht-dropdown>
+                </div>
+                <div class="divTableCell">Content</div>
+                <div class="divTableCell"><textarea v-model="content" :readonly="mode == 'Detail'">{{content}}</textarea></div>
+            </div>
+        </div>
+    </div>
+
+    <div><input type="button" value="Save" v-on:click="save()" v-show="mode != 'Detail'" /></div>
+    <div><input type="button" value="Cancel" v-on:click="cancel()" /></div>
+</div>
+
+
+
+<script>
+    var page = new Vue({
+        el: '#detail',
+        created: function () {
+            this.load();
+        },
+        data: {
+            mode: "@ViewBag.Mode",
+            id: "@ViewBag.Id",
+            title: "NewOne",
+            content: "",
+            tasktype: 1,
+            initasktypetitle:"",
+            taskstatus: 1,
+            initaskstatustitle:"",
+            tasktypeOptions: {},
+            taskstatusOptions: {},
+        },
+        methods: {
+            load: function () {
+                if (this.mode != "Add") {
+                    this.$http.get(`/TicketTask/Get?Id=${this.id}`).then(
+                        function (data) {
+                            var detail = data["data"];
+                            this.title = detail.title;
+                            this.content = detail.content;
+                            this.tasktype = detail.taskType;
+                            this.taskstatus = detail.taskStatus;
+
+                            this.gettasktypeoptions();
+                            this.gettaskstatusoptions();
+                        }, function () {
+                            if (response.status == 403) {
+                                alert(response.body);
+                                window.location.replace(`/TicketTask/Main`)
+                            }
+                            console.log('請求失敗');
+                        });
+                }
+                else
+                {
+                    this.gettasktypeoptions();
+                    this.gettaskstatusoptions();
+                }
+            },
+            gettasktypeoptions: function () {
+                this.$http.get(`/Option/GetTaskTypeAll`).then(
+                    function (data) {
+                        var options = data["data"];
+
+                        for (var i = 0; i < options.length; i++) {
+                            var item = options[i];
+                            this.tasktypeOptions[item.id] = {
+                                statusText : item.statusText,
+                                statusTitle : item.statusTitle,
+                                optionText : item.optionText,
+                                optionTitle : item.optionTitle,
+                                isShow : true,
+                            };
+                        }
+
+                        this.initasktypetitle = this.tasktypeOptions[this.tasktype].statusTitle;
+
+                    }, function () {
+                        console.log('請求失敗');
+                    });
+            },
+            gettaskstatusoptions: function () {
+                this.$http.get(`/Option/GetTaskStatusAll`).then(
+                    function (data) {
+                        var options = data["data"];
+
+                        for (var i = 0; i < options.length; i++) {
+                            var item = options[i];
+                            this.taskstatusOptions[item.id] = {
+                                statusText : item.statusText,
+                                statusTitle : item.statusTitle,
+                                optionText : item.optionText,
+                                optionTitle : item.optionTitle,
+                                isShow : true,
+                            };
+                        }
+
+                        this.initaskstatustitle = this.taskstatusOptions[this.taskstatus].statusTitle;
+
+                    }, function () {
+                        console.log('請求失敗');
+                    });
+            },
+            save: function () {
+
+                var formData = new FormData();
+                formData.append("Id", this.id);
+                formData.append("title", this.title);
+                formData.append("content", this.content);
+                formData.append("tasktype", this.tasktype);
+                formData.append("taskstatus", this.taskstatus);
+
+                this.$http.post(`/TicketTask/Save`, formData).then(
+                    function (data) {
+                        window.location.replace(`/TicketTask/Main`)
+                    }, function () {
+                        if (response.status == 403) {
+                            alert(response.body);
+                            window.location.replace(`/TicketTask/Main`)
+                        }
+                        console.log('請求失敗');
+                });
+            },
+            cancel: function () {
+                window.location.replace(`/TicketTask/Main`)
+            },
+            updatetasktypeDropdownStatus(typeId, callback) {
+                var type = Number(typeId);
+                if (type == 0) {
+                    this.tasktype = null;
+                }
+                this.tasktype = type;
+            },
+            updatetaskstatusDropdownStatus(statusId, callback) {
+                var status = Number(statusId);
+                if (status == 0) {
+                    this.taskstatus = null;
+                }
+                this.taskstatus = status;
+            },
+        }
+    });
+</script>
