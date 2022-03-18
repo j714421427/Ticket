@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Ticket.ViewModel.TickeyTask;
 
@@ -8,14 +7,11 @@ namespace Ticket.Client.TicketTask
     public class TicketTaskClient : WebApiClientBase
     {
 
-        public TicketTaskClient(string uri)
+        public TicketTaskClient(HttpClient httpClient)
         {
             RoutePrefix = WebApiControllerRoutePrefixes.TicketTasks;
 
-            client = client ?? new HttpClient
-            {
-                BaseAddress = new Uri(uri)
-            };
+            client = httpClient;
         }
 
         protected override HttpClient GetHttpClient()

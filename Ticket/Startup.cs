@@ -1,14 +1,10 @@
+using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Ticket.Client.Account;
 using Ticket.Client.Setting;
 using Ticket.Client.TicketTask;
@@ -40,10 +36,10 @@ namespace Ticket
             var config = builder.Build();
             var ticketapi = "Uri:TicketAPI";
 
-            services.AddSingleton(x=> new UserClient($"{config[ticketapi]}"));
-            services.AddSingleton(x => new RoleClient($"{config[ticketapi]}"));
-            services.AddSingleton(x=> new AccountClient($"{config[ticketapi]}"));
-            services.AddSingleton(x=> new TicketTaskClient($"{config[ticketapi]}"));
+            services.AddHttpClient<UserClient>(c => c.BaseAddress = new Uri(config[ticketapi]));
+            services.AddHttpClient<RoleClient>(c => c.BaseAddress = new Uri(config[ticketapi]));
+            services.AddHttpClient<AccountClient>(c => c.BaseAddress = new Uri(config[ticketapi]));
+            services.AddHttpClient<TicketTaskClient>(c => c.BaseAddress = new Uri(config[ticketapi]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
