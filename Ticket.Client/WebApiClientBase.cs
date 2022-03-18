@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Ticket.Client
 {
     public abstract class WebApiClientBase
     {
-        protected static HttpClient client = null;
+        protected HttpClient client;
         protected string RoutePrefix = null;
         protected static string uri = string.Empty;
 

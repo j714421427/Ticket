@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Ticket.ViewModel.Setting.Role;
 
@@ -8,14 +7,11 @@ namespace Ticket.Client.Setting
     public class RoleClient : WebApiClientBase
     {
 
-        public RoleClient(string uri)
+        public RoleClient(HttpClient httpClient)
         {
             RoutePrefix = WebApiControllerRoutePrefixes.Roles;
 
-            client = client ?? new HttpClient
-            {
-                BaseAddress = new Uri(uri)
-            };
+            client = httpClient;
         }
 
         protected override HttpClient GetHttpClient()
